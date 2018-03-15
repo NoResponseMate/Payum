@@ -1,8 +1,6 @@
 <?php
 namespace Payum\Klarna\Checkout\Tests\Action;
 
-use Payum\Core\ApiAwareInterface;
-use Payum\Core\GatewayAwareInterface;
 use Payum\Core\Request\Authorize;
 use Payum\Core\Tests\GenericActionTest;
 use Payum\Klarna\Checkout\Action\AuthorizeRecurringAction;
@@ -65,11 +63,11 @@ class AuthorizeRecurringActionTest extends GenericActionTest
     /**
      * @test
      */
-    public function shouldImplementGatewayAwareInterface()
+    public function shouldBeSubClassOfGatewayAwareAction()
     {
-        $rc = new \ReflectionClass(AuthorizeRecurringAction::class);
+        $rc = new \ReflectionClass('Payum\Klarna\Checkout\Action\AuthorizeRecurringAction');
 
-        $this->assertTrue($rc->implementsInterface(GatewayAwareInterface::class));
+        $this->assertTrue($rc->isSubclassOf('Payum\Core\Action\GatewayAwareAction'));
     }
 
     /**
@@ -77,25 +75,27 @@ class AuthorizeRecurringActionTest extends GenericActionTest
      */
     public function shouldImplementsApiAwareInterface()
     {
-        $rc = new \ReflectionClass(AuthorizeRecurringAction::class);
+        $rc = new \ReflectionClass('Payum\Klarna\Checkout\Action\AuthorizeRecurringAction');
 
-        $this->assertTrue($rc->implementsInterface(ApiAwareInterface::class));
+        $this->assertTrue($rc->implementsInterface('Payum\Core\ApiAwareInterface'));
     }
 
     public function testShouldAllowSetKlarnaConfigAsApi()
     {
         $action = new AuthorizeRecurringAction();
         $action->setApi(new Config());
+
     }
 
     /**
      * @expectedException \Payum\Core\Exception\UnsupportedApiException
-     * @expectedExceptionMessage Not supported api given. It must be an instance of Payum\Klarna\Checkout\Config
+     * @expectedExceptionMessage Not supported. Expected Payum\Klarna\Checkout\Config instance to be set as api.
      */
     public function testThrowIfNotKlarnaConfigGivenAsApi()
     {
         $action = new AuthorizeRecurringAction();
         $action->setApi(new \stdClass());
+
     }
 
     public function testShouldDoNothingIfReservationAlreadySet()
@@ -258,6 +258,6 @@ class AuthorizeRecurringActionTest extends GenericActionTest
      */
     protected function createOrderMock()
     {
-        return $this->createMock('Klarna_Checkout_Order', array(), array(), '', false);
+        return $this->getMock('Klarna_Checkout_Order', array(), array(), '', false);
     }
 }

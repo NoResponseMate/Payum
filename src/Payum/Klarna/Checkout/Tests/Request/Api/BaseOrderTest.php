@@ -2,9 +2,8 @@
 namespace Payum\Klarna\Checkout\Tests\Request\Api;
 
 use Payum\Klarna\Checkout\Request\Api\BaseOrder;
-use PHPUnit\Framework\TestCase;
 
-class BaseOrderTest extends TestCase
+class BaseOrderTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -33,7 +32,7 @@ class BaseOrderTest extends TestCase
     {
         $this->createBaseOrderMock(array());
         $this->createBaseOrderMock(new \ArrayObject());
-        $this->createBaseOrderMock($this->createMock('ArrayAccess'));
+        $this->createBaseOrderMock($this->getMock('ArrayAccess'));
     }
 
     /**
@@ -80,7 +79,7 @@ class BaseOrderTest extends TestCase
      */
     protected function createOrderMock()
     {
-        return $this->createMock('Klarna_Checkout_Order', array(), array(), '', false);
+        return $this->getMock('Klarna_Checkout_Order', array(), array(), '', false);
     }
 
     /**

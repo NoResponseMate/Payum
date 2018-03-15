@@ -1,6 +1,8 @@
 <?php
 namespace Payum\Core\Bridge\Twig;
 
+use Payum\Klarna\CheckoutRest\KlarnaCheckoutRestGatewayFactory;
+
 /**
  * @deprecated since 1.0.0-BETA4
  */
@@ -15,6 +17,7 @@ class TwigFactory
             'PayumCore' => self::guessViewsPath('Payum\Core\Gateway'),
             'PayumStripe' => self::guessViewsPath('Payum\Stripe\StripeJsGatewayFactory'),
             'PayumKlarnaCheckout' => self::guessViewsPath('Payum\Klarna\Checkout\KlarnaCheckoutGatewayFactory'),
+            'PayumKlarnaCheckoutRest' => self::guessViewsPath(KlarnaCheckoutRestGatewayFactory::class),
             'PayumSymfonyBridge' => self::guessViewsPath('Payum\Core\Bridge\Symfony\ReplyToSymfonyResponseConverter'),
         )));
     }

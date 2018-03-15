@@ -6,9 +6,8 @@ use Payum\Core\Gateway;
 use Payum\Core\GatewayFactory;
 use Payum\Core\GatewayFactoryInterface;
 use Payum\Klarna\Checkout\KlarnaCheckoutGatewayFactory;
-use PHPUnit\Framework\TestCase;
 
-class KlarnaCheckoutGatewayFactoryTest extends TestCase
+class KlarnaCheckoutGatewayFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
@@ -43,7 +42,7 @@ class KlarnaCheckoutGatewayFactoryTest extends TestCase
      */
     public function shouldUseCoreGatewayFactoryPassedAsSecondArgument()
     {
-        $coreGatewayFactory = $this->createMock(GatewayFactoryInterface::class);
+        $coreGatewayFactory = $this->getMock(GatewayFactoryInterface::class);
 
         $factory = new KlarnaCheckoutGatewayFactory(array(), $coreGatewayFactory);
 

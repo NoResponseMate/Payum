@@ -61,7 +61,7 @@ class ObtainTokenForCreditCardAction implements ActionInterface, GatewayAwareInt
         if ($model['card']) {
             throw new LogicException('Payment already has token set');
         }
-        
+
         $obtainCreditCard = new ObtainCreditCard($request->getToken());
         $obtainCreditCard->setModel($request->getFirstModel());
         $obtainCreditCard->setModel($request->getModel());
@@ -69,13 +69,13 @@ class ObtainTokenForCreditCardAction implements ActionInterface, GatewayAwareInt
         $card = $obtainCreditCard->obtain();
 
         $local = $model->getArray('local');
-        
+
         $createTokenForCreditCard = new CreateTokenForCreditCard($card);
         $createTokenForCreditCard->setToken((array) $local->getArray('token'));
-        
+
         $this->gateway->execute($createTokenForCreditCard);
         $token = ArrayObject::ensureArrayObject($createTokenForCreditCard->getToken());
-        
+
         $local['token'] = $token->toUnsafeArray();
         $model['local'] = (array) $local;
 

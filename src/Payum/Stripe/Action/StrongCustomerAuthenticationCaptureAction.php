@@ -37,7 +37,7 @@ class StrongCustomerAuthenticationCaptureAction implements ActionInterface, Gate
 
         if ($model['customer']) {
         } else {
-            if (false == $model['payment_method']) {
+            if (false == $model['payment_method_data']) {
                 $obtainToken = new ObtainTokenForStrongCustomerAuthentication($request->getToken());
                 $obtainToken->setModel($model);
 
@@ -56,6 +56,6 @@ class StrongCustomerAuthenticationCaptureAction implements ActionInterface, Gate
         return
             $request instanceof Capture &&
             $request->getModel() instanceof \ArrayAccess
-            ;
+        ;
     }
 }

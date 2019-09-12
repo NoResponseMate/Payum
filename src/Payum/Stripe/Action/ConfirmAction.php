@@ -30,12 +30,8 @@ class ConfirmAction implements ActionInterface, GatewayAwareInterface
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
-
         if (false == $model['payment_intent']) {
-            $confirmation = new RequireConfirmation($model);
-            $confirmation->setModel($model);
-
-            $this->gateway->execute($confirmation);
+            $this->gateway->execute(new RequireConfirmation($model));
         }
 
         $this->gateway->execute(new ConfirmPaymentIntent($model));
@@ -49,6 +45,6 @@ class ConfirmAction implements ActionInterface, GatewayAwareInterface
         return
             $request instanceof Confirm &&
             $request->getModel() instanceof \ArrayAccess
-            ;
+        ;
     }
 }

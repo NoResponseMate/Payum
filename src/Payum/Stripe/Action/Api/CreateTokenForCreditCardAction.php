@@ -37,7 +37,7 @@ class CreateTokenForCreditCardAction implements ActionInterface, GatewayAwareInt
         }
 
         $this->gateway->execute(new CreateToken($token));
-        
+
         $request->setToken($token->toUnsafeArray());
     }
 

@@ -74,7 +74,7 @@ class RequireConfirmationAction implements ActionInterface, GatewayAwareInterfac
 
         if (Constants::STATUS_REQUIRES_PAYMENT_METHOD != $model['status']
             && (Constants::STATUS_REQUIRES_ACTION != $model['status']
-            || !isset($model['next_action'], $model['next_action']['type'])
+            || !isset($model['next_action']['type'])
             || !Constants::NEXT_ACTION_TYPE == $model['next_action']['type'])
         ) {
             throw new LogicException('The payment does not need further confirmation');
@@ -105,6 +105,6 @@ class RequireConfirmationAction implements ActionInterface, GatewayAwareInterfac
         return
             $request instanceof RequireConfirmation &&
             $request->getModel() instanceof \ArrayAccess
-            ;
+        ;
     }
 }

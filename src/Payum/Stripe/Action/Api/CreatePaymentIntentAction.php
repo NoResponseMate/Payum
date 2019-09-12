@@ -57,12 +57,11 @@ class CreatePaymentIntentAction implements ActionInterface, ApiAwareInterface
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
-
-        if (false == ($model['payment_method'] || $model['customer'])) {
-            throw new LogicException('The either payment method token or customer id has to be set.');
+        if (false == ($model['payment_method_data'] || $model['customer'])) {
+            throw new LogicException('Either the payment method token or customer id has to be set.');
         }
 
-        if (is_array($model['payment_method'])) {
+        if (!isset($model['payment_method_data']['card']['token'])) {
             throw new LogicException('The token has already been used.');
         }
 
@@ -88,6 +87,6 @@ class CreatePaymentIntentAction implements ActionInterface, ApiAwareInterface
         return
             $request instanceof CreatePaymentIntent &&
             $request->getModel() instanceof \ArrayAccess
-            ;
+        ;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Payum\Stripe\Request;
 
+use Payum\Core\Model\ModelAggregateInterface;
+use Payum\Core\Model\ModelAwareInterface;
 use Payum\Core\Request\Generic;
 
 /**
@@ -9,6 +11,6 @@ use Payum\Core\Request\Generic;
  *
  * @author Eric Masoero <em@studeal.fr>
  */
-class Confirm extends Generic
+class Confirm extends Generic implements ModelAggregateInterface, ModelAwareInterface
 {
 }

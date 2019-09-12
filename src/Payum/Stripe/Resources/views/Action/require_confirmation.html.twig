@@ -4,6 +4,7 @@
     {{ parent() }}
 
     <form action="{{ actionUrl|default('') }}" method="POST" id="confirm-form">
+        <div class="payment-errors"></div>
         <button type="submit">Confirm Payment</button>
     </form>
 {% endblock %}
@@ -24,21 +25,21 @@
     <script type="text/javascript">
         jQuery(function($) {
             $('#confirm-form').submit(function(e) {
+                e.preventDefault();
+                // This identifies your website in the call below
+                var stripe = Stripe('{{ publishable_key|raw }}');
                 var $form = $(this);
 
                 // Disable the submit button to prevent repeated clicks
                 $form.find('button').prop('disabled', true);
 
-                // This identifies your website in the call below
-                Stripe.setPublishableKey({{ publishable_key|json_encode|raw }});
-
-                Stripe.handleCardAction('{{ payment_intent_client_secret }}', stripeResponseHandler);
+                stripe.handleCardAction('{{ payment_intent_client_secret }}').then(stripeResponseHandler);
 
                 // Prevent the form from submitting with the default action
                 return false;
             });
 
-            var stripeResponseHandler = function(status, response) {
+            var stripeResponseHandler = function(response) {
                 var $form = $('#confirm-form');
 
                 if (response.error) {
@@ -46,10 +47,8 @@
                     $form.find('.payment-errors').text(response.error.message);
                     $form.find('button').prop('disabled', false);
                 } else {
-                    // token is the confirmed payment intent's id
-                    var token = response.paymentIntent.id;
-                    // Insert the token into the form so it gets submitted to the server
-                    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                    // Insert the confirmed payment intent's id into the form so it gets submitted to the server
+                    $form.append($('<input type="hidden" name="stripeToken" />').val(response.paymentIntent.id));
                     // and re-submit
                     $form.get(0).submit();
                 }

@@ -82,6 +82,6 @@ class ConfirmPaymentIntentAction implements ActionInterface, ApiAwareInterface
         return
             $request instanceof ConfirmPaymentIntent &&
             $request->getModel() instanceof \ArrayAccess
-            ;
+        ;
     }
 }

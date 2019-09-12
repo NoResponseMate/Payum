@@ -68,15 +68,17 @@ class ObtainTokenForStrongCustomerAuthenticationAction implements ActionInterfac
         RequestNotSupportedException::assertSupports($this, $request);
 
         $model = ArrayObject::ensureArrayObject($request->getModel());
-
-        if ($model['payment_method']) {
+        if ($model['payment_method_data']) {
             throw new LogicException('The token has already been set.');
         }
 
         $getHttpRequest = new GetHttpRequest();
         $this->gateway->execute($getHttpRequest);
         if ($getHttpRequest->method == 'POST' && isset($getHttpRequest->request['stripeToken'])) {
-            $model['payment_method'] = $getHttpRequest->request['stripeToken'];
+            $model['payment_method_data'] = [
+                'type' => 'card',
+                'card' => ['token' => $getHttpRequest->request['stripeToken']],
+            ];
 
             return;
         }

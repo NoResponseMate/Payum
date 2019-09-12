@@ -67,6 +67,13 @@ class StatusAction implements ActionInterface
             return;
         }
 
+        // Payment authorization failed using SCA
+        if (Constants::STATUS_CANCELED === $model['status']) {
+            $request->markFailed();
+
+            return;
+        }
+
         if ($model['refunded']) {
             $request->markRefunded();
 

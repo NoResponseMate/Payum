@@ -1,10 +1,13 @@
 {% extends layout ?: "@PayumCore/layout.html.twig" %}
 
+{% block payum_stylesheets %}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% endblock %}
+
 {% block payum_body %}
     {{ parent() }}
 
     <form action="{{ actionUrl|default('') }}" method="POST" id="confirm-form">
-        <div class="payment-errors"></div>
         <button type="submit">Confirm Payment</button>
     </form>
 {% endblock %}
@@ -23,7 +26,11 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        jQuery(function($) {
+        $(function($) {
+            $(document).ready(function () {
+                $('#confirm-form').submit();
+            });
+
             $('#confirm-form').submit(function(e) {
                 e.preventDefault();
                 // This identifies your website in the call below
@@ -43,15 +50,14 @@
                 var $form = $('#confirm-form');
 
                 if (response.error) {
-                    // Show the errors on the form
-                    $form.find('.payment-errors').text(response.error.message);
-                    $form.find('button').prop('disabled', false);
+                    // Insert errors into the form
+                    $form.append($('<input type="hidden" name="error" />').val(response.error));
                 } else {
                     // Insert the confirmed payment intent's id into the form so it gets submitted to the server
                     $form.append($('<input type="hidden" name="stripeToken" />').val(response.paymentIntent.id));
-                    // and re-submit
-                    $form.get(0).submit();
                 }
+                // and re-submit
+                $form.get(0).submit();
             };
         });
     </script>

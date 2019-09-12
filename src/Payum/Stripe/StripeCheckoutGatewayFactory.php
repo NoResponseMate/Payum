@@ -1,20 +1,19 @@
 <?php
+
 namespace Payum\Stripe;
 
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\LogicException;
 use Payum\Core\GatewayFactory;
+use Payum\Stripe\Action\Api\CancelPaymentIntentAction;
 use Payum\Stripe\Action\Api\ConfirmPaymentIntentAction;
-use Payum\Stripe\Action\Api\CreateChargeAction;
 use Payum\Stripe\Action\Api\CreateCustomerAction;
 use Payum\Stripe\Action\Api\CreatePaymentIntentAction;
 use Payum\Stripe\Action\Api\CreatePlanAction;
 use Payum\Stripe\Action\Api\CreateSubscriptionAction;
 use Payum\Stripe\Action\Api\CreateTokenAction;
-use Payum\Stripe\Action\Api\ObtainTokenAction;
 use Payum\Stripe\Action\Api\ObtainTokenForStrongCustomerAuthenticationAction;
 use Payum\Stripe\Action\Api\CreateSetupIntentAction;
-use Payum\Stripe\Action\CaptureAction;
 use Payum\Stripe\Action\ConfirmAction;
 use Payum\Stripe\Action\ConvertPaymentAction;
 use Payum\Stripe\Action\GetCreditCardTokenAction;
@@ -26,12 +25,14 @@ use Stripe\Stripe;
 
 class StripeCheckoutGatewayFactory extends GatewayFactory
 {
+
     /**
      * {@inheritDoc}
      */
     protected function populateConfig(ArrayObject $config)
     {
-        if (false == class_exists(Stripe::class)) {
+        if (false == class_exists(Stripe::class))
+        {
             throw new LogicException('You must install "stripe/stripe-php:^3|^4|^5|^6" library.');
         }
 
@@ -52,38 +53,27 @@ class StripeCheckoutGatewayFactory extends GatewayFactory
             'payum.extension.create_customer' => new CreateCustomerExtension(),
         ]);
 
-        if (true === $config['sca_flow']) {
-            $actions = [
-                'payum.action.capture' => new StrongCustomerAuthenticationCaptureAction(),
-                'payum.action.obtain_token' => function (ArrayObject $config) {
-                    $template = $config['payum.template.obtain_token'];
+        $actions = [
+            'payum.action.capture' => new StrongCustomerAuthenticationCaptureAction(),
+            'payum.action.obtain_token' => function (ArrayObject $config) {
+                $template = $config['payum.template.obtain_token'];
 
-                    return new ObtainTokenForStrongCustomerAuthenticationAction($template);
-                },
-                'payum.action.create_charge' => new CreatePaymentIntentAction(),
+                return new ObtainTokenForStrongCustomerAuthenticationAction($template);
+            },
+            'payum.action.create_charge' => new CreatePaymentIntentAction(),
 
-                'payum.action.confirm_payment' => new ConfirmAction(),
-                'payum.action.require_confirmation' => function (ArrayObject $config) {
-                    $template = $config['payum.template.require_confirmation'];
+            'payum.action.confirm_payment' => new ConfirmAction(),
+            'payum.action.require_confirmation' => function (ArrayObject $config) {
+                $template = $config['payum.template.require_confirmation'];
 
-                    return new RequireConfirmationAction($template);
-                },
-                'payum.action.confirm_payment_intent' => new ConfirmPaymentIntentAction(),
-                'payum.action.create_setup_intent' => new CreateSetupIntentAction(),
+                return new RequireConfirmationAction($template);
+            },
+            'payum.action.cancel_payment_intent' => new CancelPaymentIntentAction(),
+            'payum.action.confirm_payment_intent' => new ConfirmPaymentIntentAction(),
+            'payum.action.create_setup_intent' => new CreateSetupIntentAction(),
 
-                'payum.template.require_confirmation' => '@PayumStripe/Action/require_confirmation.html.twig',
-            ];
-        } else {
-            $actions = [
-                'payum.action.capture' => new CaptureAction(),
-                'payum.action.obtain_token' => function (ArrayObject $config) {
-                    $template = $config['payum.template.obtain_token'];
-
-                    return new ObtainTokenAction($template);
-                },
-                'payum.action.create_charge' => new CreateChargeAction(),
-            ];
-        }
+            'payum.template.require_confirmation' => '@PayumStripe/Action/require_confirmation.html.twig',
+        ];
 
         $config->defaults($actions);
 
@@ -104,7 +94,7 @@ class StripeCheckoutGatewayFactory extends GatewayFactory
         }
 
         $config['payum.paths'] = array_replace([
-            'PayumStripe' => __DIR__.'/Resources/views',
+            'PayumStripe' => __DIR__ . '/Resources/views',
         ], $config['payum.paths'] ?: []);
     }
 }
